@@ -24,6 +24,8 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QScreen>
+#include <QScrollArea>
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
@@ -41,6 +43,7 @@
 #include "ui/KeyboardPreferencePane.h"
 #include "ui/MousePreferencePane.h"
 #include "ui/PreferencePane.h"
+#include "ui/ViewConstants.h"
 #include "ui/ViewPreferencePane.h"
 
 #include <filesystem>
@@ -71,6 +74,14 @@ PreferenceDialog::PreferenceDialog(
   createGui();
   switchToPane(PrefPane::First);
   currentPane()->updateControls();
+
+  const auto preferredSize = preferredDialogSize();
+  if (const auto* currentScreen = screen())
+  {
+    const auto available = currentScreen->availableGeometry().size();
+    setMaximumSize(available);
+    resize(preferredSize.boundedTo(available));
+  }
 
   connectObservers();
 }
@@ -143,12 +154,27 @@ void PreferenceDialog::createGui()
   }
 
   m_stackedWidget = new QStackedWidget{};
-  m_stackedWidget->addWidget(new GamesPreferencePane{m_appController, m_document});
-  m_stackedWidget->addWidget(new ViewPreferencePane{});
-  m_stackedWidget->addWidget(new ColorsPreferencePane{});
-  m_stackedWidget->addWidget(new MousePreferencePane{});
-  m_stackedWidget->addWidget(new KeyboardPreferencePane{m_appController, m_document});
-  m_stackedWidget->addWidget(new UpdatePreferencePane{m_appController});
+
+  // Panes whose content already scrolls (table views) are added directly.
+  // Form-based panes are wrapped in a scroll area so they remain usable on small screens.
+  m_panes = {
+    new GamesPreferencePane{m_appController, m_document},
+    new ViewPreferencePane{},
+    new ColorsPreferencePane{},
+    new MousePreferencePane{},
+    new KeyboardPreferencePane{m_appController, m_document},
+    new UpdatePreferencePane{m_appController},
+  };
+
+  m_stackedWidget->addWidget(
+    createScrollArea(m_panes[static_cast<int>(PrefPane::Games)]));
+  m_stackedWidget->addWidget(createScrollArea(m_panes[static_cast<int>(PrefPane::View)]));
+  m_stackedWidget->addWidget(m_panes[static_cast<int>(PrefPane::Colors)]);
+  m_stackedWidget->addWidget(
+    createScrollArea(m_panes[static_cast<int>(PrefPane::Mouse)]));
+  m_stackedWidget->addWidget(m_panes[static_cast<int>(PrefPane::Keyboard)]);
+  m_stackedWidget->addWidget(
+    createScrollArea(m_panes[static_cast<int>(PrefPane::Update)]));
 
   m_buttonBox = new QDialogButtonBox{
     PreferenceManager::instance().saveInstantly()
@@ -194,6 +220,34 @@ void PreferenceDialog::createGui()
   layout->addLayout(wrapDialogButtonBox(m_buttonBox));
 }
 
+QScrollArea* PreferenceDialog::createScrollArea(QWidget* widget)
+{
+  auto* scrollArea = new QScrollArea{this};
+  scrollArea->setWidget(widget);
+  scrollArea->setWidgetResizable(true);
+  scrollArea->setFrameShape(QFrame::NoFrame);
+  scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  return scrollArea;
+}
+
+QSize PreferenceDialog::preferredDialogSize() const
+{
+  // The stacked widget's sizeHint is unreliable because some panes are wrapped in scroll
+  // areas that report smaller-than-expected hints.
+  // Find the tallest pane's actual height instead.
+  auto maxPaneHeight = 0;
+  for (const auto* pane : m_panes)
+  {
+    maxPaneHeight = std::max(maxPaneHeight, pane->sizeHint().height());
+  }
+  const auto toolbarAndButtonBoxHeight =
+    sizeHint().height() - m_stackedWidget->sizeHint().height();
+  return {
+    std::max(sizeHint().width(), LayoutConstants::PreferenceDialogMinWidth),
+    toolbarAndButtonBoxHeight + maxPaneHeight};
+}
+
 void PreferenceDialog::switchToPane(const PrefPane pane)
 {
   if (currentPane()->validate())
@@ -208,7 +262,7 @@ void PreferenceDialog::switchToPane(const PrefPane pane)
 
 PreferencePane* PreferenceDialog::currentPane() const
 {
-  return static_cast<PreferencePane*>(m_stackedWidget->currentWidget());
+  return m_panes[static_cast<size_t>(m_stackedWidget->currentIndex())];
 }
 
 void PreferenceDialog::connectObservers()

@@ -98,7 +98,7 @@ KeyboardPreferencePane::KeyboardPreferencePane(
   layout->addLayout(infoAndSearchLayout);
   setLayout(layout);
 
-  setMinimumSize(900, 550);
+  setMinimumWidth(LayoutConstants::PreferencePaneMinWidth);
 
   connect(searchBox, &QLineEdit::textChanged, this, [&](const QString& newText) {
     m_proxy->setFilterFixedString(newText);

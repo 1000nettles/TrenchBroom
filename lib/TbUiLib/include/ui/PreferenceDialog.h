@@ -23,7 +23,10 @@
 
 #include "NotifierConnection.h"
 
+#include <vector>
+
 class QDialogButtonBox;
+class QScrollArea;
 class QStackedWidget;
 class QToolBar;
 class QWidget;
@@ -44,6 +47,7 @@ private:
   MapDocument* m_document = nullptr;
   QToolBar* m_toolBar = nullptr;
   QStackedWidget* m_stackedWidget = nullptr;
+  std::vector<PreferencePane*> m_panes;
   QDialogButtonBox* m_buttonBox = nullptr;
 
   NotifierConnection m_notifierConnection;
@@ -58,6 +62,8 @@ protected: // QWidget overrides
 
 private:
   void createGui();
+  QScrollArea* createScrollArea(QWidget* widget);
+  QSize preferredDialogSize() const;
   void switchToPane(PrefPane pane);
   PreferencePane* currentPane() const;
   void connectObservers();
