@@ -155,8 +155,6 @@ void PreferenceDialog::createGui()
 
   m_stackedWidget = new QStackedWidget{};
 
-  // Panes whose content already scrolls (table views) are added directly.
-  // Form-based panes are wrapped in a scroll area so they remain usable on small screens.
   m_panes = {
     new GamesPreferencePane{m_appController, m_document},
     new ViewPreferencePane{},
@@ -166,6 +164,8 @@ void PreferenceDialog::createGui()
     new UpdatePreferencePane{m_appController},
   };
 
+  // Panes that manage their own scrolling are added here directly.
+  // All others are wrapped in a QScrollArea.
   m_stackedWidget->addWidget(
     createScrollArea(m_panes[static_cast<int>(PrefPane::Games)]));
   m_stackedWidget->addWidget(createScrollArea(m_panes[static_cast<int>(PrefPane::View)]));
@@ -241,11 +241,10 @@ QSize PreferenceDialog::preferredDialogSize() const
   {
     maxPaneHeight = std::max(maxPaneHeight, pane->sizeHint().height());
   }
-  const auto toolbarAndButtonBoxHeight =
-    sizeHint().height() - m_stackedWidget->sizeHint().height();
+  const auto frameHeight = sizeHint().height() - m_stackedWidget->sizeHint().height();
   return {
     std::max(sizeHint().width(), LayoutConstants::PreferenceDialogMinWidth),
-    toolbarAndButtonBoxHeight + maxPaneHeight};
+    frameHeight + maxPaneHeight};
 }
 
 void PreferenceDialog::switchToPane(const PrefPane pane)
