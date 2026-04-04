@@ -214,7 +214,6 @@ QWidget* ViewPreferencePane::createViewPreferences()
   layout->addSection("Fonts");
   layout->addRow("Renderer Font Size", m_rendererFontSizeCombo);
 
-  viewBox->setMinimumWidth(LayoutConstants::PreferencePaneMinWidth);
   viewBox->setLayout(layout);
 
   return viewBox;

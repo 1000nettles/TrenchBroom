@@ -152,7 +152,6 @@ void MousePreferencePane::createGui()
                  "adjust speed on the fly."}));
 
   setLayout(layout);
-  setMinimumWidth(LayoutConstants::PreferencePaneMinWidth);
 }
 
 void MousePreferencePane::bindEvents()
