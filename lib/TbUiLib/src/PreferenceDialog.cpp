@@ -79,9 +79,9 @@ PreferenceDialog::PreferenceDialog(
   const auto preferredSize = preferredDialogSize();
   if (const auto* currentScreen = screen())
   {
-    const auto available = currentScreen->availableGeometry().size();
-    setMaximumSize(available);
-    resize(preferredSize.boundedTo(available));
+    const auto availableSize = currentScreen->availableGeometry().size();
+    setMaximumSize(availableSize);
+    resize(preferredSize.boundedTo(availableSize));
   }
 
   connectObservers();
