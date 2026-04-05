@@ -72,7 +72,9 @@ PreferenceDialog::PreferenceDialog(
   setWindowTitle("Preferences");
   setWindowIconTB(this);
   createGui();
-  setMinimumWidth(LayoutConstants::PreferenceDialogMinWidth);
+  setMinimumSize(
+    LayoutConstants::PreferenceDialogMinWidth,
+    LayoutConstants::PreferenceDialogMinHeight);
   switchToPane(PrefPane::First);
   currentPane()->updateControls();
 

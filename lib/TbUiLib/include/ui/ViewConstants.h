@@ -92,6 +92,7 @@ static constexpr int ToggleButtonStyle = 0;
 static constexpr int MinPreferenceLabelWidth = 100;
 static constexpr int HighlightBoxMargin = 5;
 static constexpr int PreferenceDialogMinWidth = 900;
+static constexpr int PreferenceDialogMinHeight = 300;
 } // namespace LayoutConstants
 
 namespace Fonts
