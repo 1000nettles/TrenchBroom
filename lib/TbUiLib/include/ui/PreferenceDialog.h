@@ -65,6 +65,7 @@ private:
   QScrollArea* createScrollArea(QWidget* widget);
   QSize preferredDialogSize() const;
   void switchToPane(PrefPane pane);
+  PreferencePane* pane(PrefPane p) const;
   PreferencePane* currentPane() const;
   void connectObservers();
 private slots:

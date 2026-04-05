@@ -167,15 +167,12 @@ void PreferenceDialog::createGui()
 
   // Panes that manage their own scrolling are added here directly.
   // All others are wrapped in a QScrollArea.
-  m_stackedWidget->addWidget(
-    createScrollArea(m_panes[static_cast<int>(PrefPane::Games)]));
-  m_stackedWidget->addWidget(createScrollArea(m_panes[static_cast<int>(PrefPane::View)]));
-  m_stackedWidget->addWidget(m_panes[static_cast<int>(PrefPane::Colors)]);
-  m_stackedWidget->addWidget(
-    createScrollArea(m_panes[static_cast<int>(PrefPane::Mouse)]));
-  m_stackedWidget->addWidget(m_panes[static_cast<int>(PrefPane::Keyboard)]);
-  m_stackedWidget->addWidget(
-    createScrollArea(m_panes[static_cast<int>(PrefPane::Update)]));
+  m_stackedWidget->addWidget(createScrollArea(pane(PrefPane::Games)));
+  m_stackedWidget->addWidget(createScrollArea(pane(PrefPane::View)));
+  m_stackedWidget->addWidget(pane(PrefPane::Colors));
+  m_stackedWidget->addWidget(createScrollArea(pane(PrefPane::Mouse)));
+  m_stackedWidget->addWidget(pane(PrefPane::Keyboard));
+  m_stackedWidget->addWidget(createScrollArea(pane(PrefPane::Update)));
 
   m_buttonBox = new QDialogButtonBox{
     PreferenceManager::instance().saveInstantly()
@@ -260,9 +257,14 @@ void PreferenceDialog::switchToPane(const PrefPane pane)
   }
 }
 
+PreferencePane* PreferenceDialog::pane(const PrefPane p) const
+{
+  return m_panes[static_cast<size_t>(p)];
+}
+
 PreferencePane* PreferenceDialog::currentPane() const
 {
-  return m_panes[static_cast<size_t>(m_stackedWidget->currentIndex())];
+  return pane(static_cast<PrefPane>(m_stackedWidget->currentIndex()));
 }
 
 void PreferenceDialog::connectObservers()
