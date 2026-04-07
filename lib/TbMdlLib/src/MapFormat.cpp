@@ -134,6 +134,16 @@ std::string formatName(const MapFormat format)
   }
 }
 
+std::string formatDisplayName(const MapFormat format)
+{
+  auto name = formatName(format);
+  if (format == MapFormat::Standard || format == MapFormat::Quake2)
+  {
+    name += " (Legacy)";
+  }
+  return name;
+}
+
 std::vector<MapFormat> compatibleFormats(const MapFormat format)
 {
   switch (format)

@@ -34,10 +34,12 @@ enum class MapFormat
   Unknown,
   /**
    * Standard Quake 1 map format.
+   * Now considered legacy, and Valve is preferred.
    */
   Standard,
   /**
    * Quake 2 map format.
+   * Now considered legacy, and Quake2_Valve is preferred.
    */
   Quake2,
   /**
@@ -90,6 +92,18 @@ MapFormat formatFromName(const std::string& formatName);
  * @return the name
  */
 std::string formatName(MapFormat format);
+
+/**
+ * Returns the user-facing display name of the given map format enum value.
+ * For example, MapFormat::Standard is displayed as "Standard (Legacy)".
+ * If there's no specific display name defined, other formats return the same
+ * value as formatName().
+ *
+ * @param format the enum value
+ * @return the user-facing display name
+ */
+std::string formatDisplayName(MapFormat format);
+
 /**
  * Returns a vector starting with the given format, then the other formats which are
  * compatible with it.
