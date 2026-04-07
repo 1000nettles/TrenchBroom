@@ -276,7 +276,8 @@ void GameDialog::updateMapFormats(const std::string& gameName)
   {
     const auto mapFormat = mdl::formatFromName(fileFormat.format);
     m_mapFormatComboBox->addItem(
-      QString::fromStdString(fileFormat.format), formatToUserData(mapFormat));
+      QString::fromStdString(mdl::formatDisplayName(mapFormat)),
+      formatToUserData(mapFormat));
   }
 
   m_mapFormatComboBox->setEnabled(m_mapFormatComboBox->count() > 1);
