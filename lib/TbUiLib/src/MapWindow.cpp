@@ -557,7 +557,7 @@ QString describeSelection(const mdl::Map& map)
 
   pipeSeparatedSections << QString::fromStdString(map.gameInfo().gameConfig.name)
                         << QString::fromStdString(
-                             mdl::formatName(map.worldNode().mapFormat()))
+                             mdl::formatDisplayName(map.worldNode().mapFormat()))
                         << QString::fromStdString(editorContext.currentLayer()->name());
 
   // open groups
