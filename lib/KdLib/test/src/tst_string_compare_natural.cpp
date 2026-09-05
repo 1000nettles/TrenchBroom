@@ -80,7 +80,7 @@ TEST_CASE("string_compare_natural")
     CHECK(str_compare_natural("WALL16", "wall16") == 0);
 
     // strings without digits or whitespace compare like str_compare. This
-    // matters for characters between 'Z' and 'a', such as '_', which is common 
+    // matters for characters between 'Z' and 'a', such as '_', which is common
     // in material and entity names. Upper case folding would sort these
     // characters after the letters.
     CHECK(str_compare_natural("asdf", "wxyt") == str_compare("asdf", "wxyt"));
