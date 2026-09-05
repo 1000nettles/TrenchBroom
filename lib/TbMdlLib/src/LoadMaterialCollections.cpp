@@ -47,6 +47,7 @@
 #include "kd/result.h"
 #include "kd/result_fold.h"
 #include "kd/string_compare.h"
+#include "kd/string_compare_natural.h"
 #include "kd/string_format.h"
 #include "kd/vector_utils.h"
 
@@ -349,10 +350,9 @@ std::string materialCollectionName(
 std::vector<gl::MaterialCollection> groupMaterialsIntoCollections(
   std::vector<gl::Material> materials)
 {
-  materials = kdl::vec_sort(std::move(materials), [&](const auto& lhs, const auto& rhs) {
-    return lhs.collectionName() < rhs.collectionName()   ? true
-           : lhs.collectionName() > rhs.collectionName() ? false
-                                                         : lhs.name() < rhs.name();
+  // chunk_by needs a total order on collectionName, so use string_less_natural
+  materials = kdl::vec_sort(std::move(materials), [](const auto& lhs, const auto& rhs) {
+    return kdl::ci::string_less_natural{}(lhs.collectionName(), rhs.collectionName());
   });
 
   return materials | kdl::views::chunk_by([&](const auto& lhs, const auto& rhs) {
