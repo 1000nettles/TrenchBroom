@@ -42,7 +42,7 @@ TEST_CASE("string_compare_natural")
 {
   SECTION("str_compare_natural")
   {
-    // a run of digits compares by its numeric value
+    // runs of digits compare by numeric value
     CHECK(str_compare_natural("16", "128") == -1);
     CHECK(str_compare_natural("128", "16") == +1);
     CHECK(str_compare_natural("16", "16") == 0);
@@ -53,9 +53,8 @@ TEST_CASE("string_compare_natural")
     CHECK(str_compare_natural("door1_1", "door10_1") == -1);
     CHECK(str_compare_natural("img9", "img10") == -1);
 
-    // a run of digits that starts with a zero compares as a fraction. This rule
-    // orders version numbers such as "1.001" correctly. Zero padded numbers of
-    // different width do not compare by value.
+    // digits with a leading zero compare as a fraction, so zero padded numbers of
+    // different width do not compare by value
     CHECK(str_compare_natural("007", "8") == -1);
     CHECK(str_compare_natural("007", "7") == -1);
     CHECK(str_compare_natural("7", "007") == +1);
@@ -63,7 +62,7 @@ TEST_CASE("string_compare_natural")
     CHECK(str_compare_natural("img09", "img010") == +1);
     CHECK(str_compare_natural("1", "09") == +1);
 
-    // the comparison skips whitespace. It does not compare whitespace.
+    // whitespace is skipped, not compared
     CHECK(str_compare_natural("my mod", "mymod") == 0);
     CHECK(str_compare_natural("a b", "ab") == 0);
     CHECK(str_compare_natural(" x", "x") == 0);
@@ -75,15 +74,15 @@ TEST_CASE("string_compare_natural")
     CHECK(str_compare_natural("wall", "wall1") == -1);
     CHECK(str_compare_natural("wall1", "wall") == +1);
 
-    // the comparison ignores case
+    // case is ignored
     CHECK(str_compare_natural("WALL16", "wall128") == -1);
     CHECK(str_compare_natural("wall16", "WALL128") == -1);
     CHECK(str_compare_natural("WALL16", "wall16") == 0);
 
-    // a string with no digits and no whitespace compares as str_compare compares it.
-    // This is also true for the characters between 'Z' and 'a'. One of these
-    // characters is '_', which is common in material names and entity names. Upper
-    // case folding would sort these characters after the letters, not before them.
+    // strings without digits or whitespace compare like str_compare. This
+    // matters for characters between 'Z' and 'a', such as '_', which is common 
+    // in material and entity names. Upper case folding would sort these
+    // characters after the letters.
     CHECK(str_compare_natural("asdf", "wxyt") == str_compare("asdf", "wxyt"));
     CHECK(str_compare_natural("asdf", "Wxyt") == str_compare("asdf", "Wxyt"));
     CHECK(str_compare_natural("Asdf", "Wxyt") == str_compare("Asdf", "Wxyt"));

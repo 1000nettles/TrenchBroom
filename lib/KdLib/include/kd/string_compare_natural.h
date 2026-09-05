@@ -26,19 +26,18 @@ namespace kdl::ci
 {
 
 /**
- * Compares the given strings in natural order: a run of digits compares by its numeric
- * value, so "tex16" sorts before "tex128". All other characters compare without case
- * sensitivity.
+ * Compares the given strings in natural order: runs of digits compare by numeric value,
+ * so "tex16" sorts before "tex128". All other characters compare case insensitively.
  *
- * This wraps strnatcmp from Martin Pool's natsort, see
- * https://sourcefrog.net/projects/natsort/. Two of its rules can be surprising:
+ * Wraps strnatcmp from Martin Pool's natsort, see
+ * https://sourcefrog.net/projects/natsort/. Two of its rules may surprise:
  *
- * - A run of digits with a leading '0' compares as a fraction, so "wall08" sorts before
- *   "wall1". This orders version numbers such as "1.001" correctly.
+ * - Digits with a leading '0' compare as a fraction, so "wall08" sorts before "wall1".
+ *   This keeps version numbers such as "1.001" in the correct order.
  * - Whitespace is skipped, so "my mod" and "mymod" compare equal.
  *
- * Because of these rules, different strings can compare equal. Use string_less_natural
- * if you need a total order.
+ * Different strings can therefore compare equal. Use string_less_natural for a total
+ * order.
  *
  * @param s1 the first string
  * @param s2 the second string
@@ -47,8 +46,8 @@ namespace kdl::ci
 int str_compare_natural(std::string_view s1, std::string_view s2);
 
 /**
- * Orders strings by str_compare_natural. Ties between different strings are broken by
- * the exact strings, so this is a total order.
+ * Orders strings by str_compare_natural and breaks ties by exact value, so different
+ * strings never compare equal. This is safe to use as a sort predicate.
  */
 struct string_less_natural
 {

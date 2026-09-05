@@ -350,10 +350,10 @@ std::string materialCollectionName(
 std::vector<gl::MaterialCollection> groupMaterialsIntoCollections(
   std::vector<gl::Material> materials)
 {
-  // Natural comparison folds case and skips whitespace, so distinct collection names
-  // such as "base 1.wad" and "base1.wad" compare equal. string_less_natural breaks such
-  // ties on the exact name, which keeps materials with the same collectionName adjacent.
-  // Without that, the chunk_by below could split one collection into several.
+  // Natural comparison folds case and skips whitespace, so distinct names such as
+  // "base 1.wad" and "base1.wad" can compare equal. string_less_natural breaks such
+  // ties by exact name, which keeps equal collection names adjacent. Otherwise, the
+  // chunk_by below could split one collection into several.
   materials = kdl::vec_sort(std::move(materials), [](const auto& lhs, const auto& rhs) {
     return kdl::ci::string_less_natural{}(lhs.collectionName(), rhs.collectionName());
   });

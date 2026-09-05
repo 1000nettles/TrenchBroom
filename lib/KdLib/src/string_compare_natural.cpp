@@ -32,16 +32,16 @@ namespace kdl::ci
 
 int str_compare_natural(const std::string_view s1, const std::string_view s2)
 {
-  // strnatcmp needs null terminated strings, so we copy anyway. strnatcasecmp folds to
-  // upper case, which sorts '_' after the letters and disagrees with ci::char_less. Fold
-  // to lower case ourselves and compare case sensitively instead.
+  // strnatcmp needs null terminated strings, so we must copy anyway. We fold to lower
+  // case here instead of using strnatcasecmp, which folds to upper case and would sort
+  // '_' after the letters, unlike ci::char_less.
   return strnatcmp(str_to_lower(s1).c_str(), str_to_lower(s2).c_str());
 }
 
 bool string_less_natural::operator()(
   const std::string_view lhs, const std::string_view rhs) const
 {
-  // break ties with the exact strings so that this is a total order
+  // break ties by exact string to get a total order
   const auto compareResult = str_compare_natural(lhs, rhs);
   return compareResult != 0 ? compareResult < 0 : lhs < rhs;
 }

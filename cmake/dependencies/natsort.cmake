@@ -1,5 +1,5 @@
-# natsort has no CMake build and no tagged releases, so download the pinned
-# commit and build strnatcmp.c ourselves.
+# natsort ships no CMake build and no releases, so we compile strnatcmp.c from a
+# pinned commit.
 CPMAddPackage(
   URI "gh:sourcefrog/natsort#cdd8df9602e727482ae5e051cff74b7ec7ffa07a"
   DOWNLOAD_ONLY YES
